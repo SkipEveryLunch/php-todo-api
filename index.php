@@ -12,6 +12,8 @@
     http_response_code(404);
     exit;
   }
+  $db = new Database("localhost","todolist_db","root","");
+  $db->getConnection();
   header("content-type:application/json; charset:UTF-8");
   $controller = new TaskController;
   $controller->processRequest($method,$id);
