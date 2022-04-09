@@ -1,6 +1,8 @@
 <?php
   declare(strict_types=1);
   require dirname(__DIR__)."/todo-api/vendor/autoload.php";
+  $dotenv=Dotenv\Dotenv::createImmutable(dirname(__DIR__)."/todo-api");
+  $dotenv->load();
   set_exception_handler("ErrorHandler::handleException");
 
   $method = $_SERVER["REQUEST_METHOD"];
@@ -12,7 +14,7 @@
     http_response_code(404);
     exit;
   }
-  $db = new Database("localhost","todolist_db","root","");
+  $db = new Database($_ENV["DB_HOST"],$_ENV["DB_NAME"],$_ENV["DB_USER"],$_ENV["DB_PASS"]);
   $db->getConnection();
   header("content-type:application/json; charset:UTF-8");
   $controller = new TaskController;
