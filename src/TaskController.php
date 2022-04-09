@@ -14,24 +14,36 @@
           $this->responseMethodNotAllowed("GET,POST");
         }
       }else{
-        switch($method){
-          case "GET":
-            echo json_encode($this->gateway->get($id));
-            break;
-          case "PATCH":
-            echo "edit $id";
-            break;
-          case "DELETE":
-            echo "delete $id";
-            break;
-          default:
-            $this->responseMethodNotAllowed("GET,PATCH,POST");
+        $task = $this->gateway->get($id);
+        if($task!==false){
+          switch($method){
+            case "GET":
+              echo json_encode($task);
+              break;
+            case "PATCH":
+              echo "edit $id";
+              break;
+            case "DELETE":
+              echo "delete $id";
+              break;
+            default:
+              $this->responseMethodNotAllowed("GET,PATCH,POST");
         }
+      }else{
+        $this->responseNotFound($id);
+        return;
       }
     }
-    function responseMethodNotAllowed($allowed){
-      http_response_code(405);
-      header("Allow: $allowed");
-    }
   }
+  function responseMethodNotAllowed($allowed){
+    http_response_code(405);
+    header("Allow: $allowed");
+  }
+  function responseNotFound(string $id){
+    http_response_code(404);
+    echo json_encode([
+      "message" => "Task with id $id cannot be found."
+    ]);
+  }
+}
 ?>
