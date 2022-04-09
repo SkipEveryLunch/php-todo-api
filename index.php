@@ -15,8 +15,8 @@
     exit;
   }
   $db = new Database($_ENV["DB_HOST"],$_ENV["DB_NAME"],$_ENV["DB_USER"],$_ENV["DB_PASS"]);
-  $db->getConnection();
+  $task_gateway = new TaskGateway($db);
+  $controller = new TaskController($task_gateway);
   header("content-type:application/json; charset:UTF-8");
-  $controller = new TaskController;
   $controller->processRequest($method,$id);
 ?>
