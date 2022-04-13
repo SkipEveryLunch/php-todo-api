@@ -3,6 +3,7 @@
   require dirname(__DIR__)."/todo-api/vendor/autoload.php";
   $dotenv=Dotenv\Dotenv::createImmutable(dirname(__DIR__)."/todo-api");
   $dotenv->load();
+  set_error_handler("ErrorHandler::handleError");
   set_exception_handler("ErrorHandler::handleException");
 
   $method = $_SERVER["REQUEST_METHOD"];
