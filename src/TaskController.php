@@ -9,7 +9,9 @@
         if($method==="GET"){
           echo json_encode($this->gateway->getAll());
         }elseif($method==="POST"){
-          echo "created";
+          $data = (array)json_decode(file_get_contents("php://input"),true);
+          $id = $this->gateway->create($data);
+          $this->responseCreated($id);
         }else{
           $this->responseMethodNotAllowed("GET,POST");
         }
@@ -43,6 +45,12 @@
     http_response_code(404);
     echo json_encode([
       "message" => "Task with id $id cannot be found."
+    ]);
+  }
+  function responseCreated(string $id):void{
+    http_response_code(201);
+    echo json_encode([
+      "message" => "Task with id $id is successfully created."
     ]);
   }
 }
