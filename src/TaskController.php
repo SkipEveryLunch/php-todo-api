@@ -28,6 +28,8 @@
               echo json_encode($task);
               break;
             case "PATCH":
+              $data = (array)json_decode(file_get_contents("php://input"),true);
+              $errors = $this->getValidationErrors($data,false);
               echo "edit $id";
               break;
             case "DELETE":
@@ -64,9 +66,9 @@
       "errors" => $errors
     ]);
   }
-  public function getValidationErrors($data){
+  public function getValidationErrors(array $data,bool $is_new = true){
     $errors = [];
-    if(empty($data["name"])){
+    if($is_new && empty($data["name"])){
       $errors[] = "name is required";
     }
     if(!empty($data["priority"])){
