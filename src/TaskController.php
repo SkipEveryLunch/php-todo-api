@@ -10,8 +10,13 @@
           echo json_encode($this->gateway->getAll());
         }elseif($method==="POST"){
           $data = (array)json_decode(file_get_contents("php://input"),true);
-          $id = $this->gateway->create($data);
-          $this->responseCreated($id);
+          $errors = $this->getValidationErrors($data);
+          if(!empty($errors)){
+            $this->responseUnprocessableEntity($errors);
+          }else{
+            $id = $this->gateway->create($data);
+            $this->responseCreated($id);
+          }
         }else{
           $this->responseMethodNotAllowed("GET,POST");
         }
@@ -52,6 +57,24 @@
     echo json_encode([
       "message" => "Task with id $id is successfully created."
     ]);
+  }
+  function responseUnprocessableEntity(array $errors):void{
+    http_response_code(422);
+    echo json_encode([
+      "errors" => $errors
+    ]);
+  }
+  public function getValidationErrors($data){
+    $errors = [];
+    if(empty($data["name"])){
+      $errors[] = "name is required";
+    }
+    if(!empty($data["priority"])){
+      if(filter_var($data["priority"],FILTER_VALIDATE_INT)===false){
+        $errors[] = "priority needs to be a number";
+      }
+    }
+    return $errors;
   }
 }
 ?>

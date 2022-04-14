@@ -30,7 +30,6 @@
       return $data;
     }
     public function create(array $data){
-      var_dump($data["is_completed"]);
       $sql = "INSERT INTO task (name,priority,is_completed)
               VALUES(:name,:priority,:is_completed)";
       $stmt = $this->conn->prepare($sql);
@@ -40,7 +39,11 @@
       }else{
         $stmt->bindValue(":priority",$data["priority"],PDO::PARAM_INT);
       }
-      $stmt->bindValue(":is_completed",$data["is_completed"],PDO::PARAM_BOOL);
+      if(empty($data["is_completed"])){
+        $stmt->bindValue(":is_completed",false,PDO::PARAM_BOOL);
+      }else{
+        $stmt->bindValue(":is_completed",$data["is_completed"],PDO::PARAM_BOOL);
+      }
       $stmt->execute();
       return $this->conn->lastInsertId();
     }
