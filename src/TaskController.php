@@ -30,7 +30,10 @@
             case "PATCH":
               $data = (array)json_decode(file_get_contents("php://input"),true);
               $errors = $this->getValidationErrors($data,false);
-              echo "edit $id";
+              $rows = $this->gateway->update($id,$data);
+              echo json_encode([
+                "message" => "task updated," .$rows
+              ]);
               break;
             case "DELETE":
               echo "delete $id";
