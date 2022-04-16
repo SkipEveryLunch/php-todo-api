@@ -36,7 +36,10 @@
               ]);
               break;
             case "DELETE":
-              echo "delete $id";
+              $rows = $this->gateway->delete($id);
+              echo json_encode([
+                "message" => "task deleted," .$rows
+              ]);
               break;
             default:
               $this->responseMethodNotAllowed("GET,PATCH,POST");
